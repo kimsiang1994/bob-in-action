@@ -86,23 +86,24 @@ python tools/checkers/check_effort_numbers.py --csv runs/acme-1/reports/effort-m
 python .bob/skills/si-collate/scripts/validate_report_quality.py --pack runs/acme-1/reports --rubric .bob/standards/report-quality-rubric.json --findings runs/acme-1/data/findings.json --plan-tasks runs/acme-1/data/plan-tasks.json --effort-rows runs/acme-1/data/effort-rows.json
 ```
 
-Exit code 0 means a check passed. When a checker prints errors, paste them into Bob in the same mode and ask it to correct only what they name. The tools that write files refuse to overwrite, so delete `effort-model.csv`, `illustrative-price.json` and `effort-check.json` before running the price checks again. The final report check is strict: a first pass that fails on a wording rule or two is normal, not a broken kit.
+Exit code 0 means a check passed. When a checker prints errors, paste them into Bob in the same mode and ask it to correct only what they name. The tools that write files refuse to overwrite, so delete `effort-model.csv`, `illustrative-price.json` and `effort-check.json` before running the price checks again. The final report check is strict: a first pass that fails on a wording rule or two is normal, not a broken kit. It reads the whole pack, so its errors can name files from earlier stages; fix each file in the mode that wrote it: `assessment.md` and `target-annexes.md` in `si-architect`, `implementation-plan.md` and `validation-ledger.md` in `si-pm`, `sow.md` in `si-commercial`.
 
 The finished pack is `runs/acme-1/reports/`: the assessment, the target annexes, the implementation plan, the validation ledger, the effort model and the draft SOW. The illustrative price table in `runs/acme-1/checks/` is synthetic, marked `not_a_quote`, and comes from the SI's tools, not from Bob.
 
 ## What it costs
 
-Each command uses Bob credits from your own account; the checkers cost nothing. In our own runs of these four stages, Bob used roughly:
+Each command uses Bob credits from your own account; the checkers cost nothing. Bob used roughly:
 
-| Stage | Bob credits |
-|---|---|
-| `/discover` | about 0.4 to 0.5 |
-| `/assess` | about 3 |
-| `/plan` | about 3.2 |
-| `/price` | about 2.5 to 3.3 |
-| All four | about 9 to 10 |
+| Stage | Controlled runs | Live run, first pass | Live run, with correction rounds |
+|---|---|---|---|
+| `/discover` | about 0.4 to 0.5 | about 1.1 | about 3.5 |
+| `/assess` | about 3 | about 1.3 | about 3.5 |
+| `/plan` | about 3.2 | about 1.4 | about 2.2 |
+| `/price` | about 2.5 to 3.3 | about 1.2 | about 1.8 |
+| Fixes for the final report check | | | about 0.7 |
+| All four | about 9 to 10 | about 5 | about 11.6 |
 
-Those runs were controlled, with fixed limits on how long each stage could go. Interactive use can cost more: every correction round after a checker error is another Bob turn, and long, open-ended chats in a stage add up. Treat the figures as a guide, not a promise.
+The controlled runs had fixed limits on how long each stage could go. The live run is this repository, run with Bob on 19 October 2026 and corrected until every checker passed. Correction rounds cost the most when they are open-ended. A short new task that names the exact rows or lines from the checker's errors cost us about 0.1 to 0.3 each; going on in a long chat cost about 0.5 to 1.3 per round. Treat the figures as a guide, not a promise.
 
 ## What keeps Bob in its lane
 
@@ -112,7 +113,7 @@ Those runs were controlled, with fixed limits on how long each stage could go. I
 
 These are backstops for honest mistakes in a demo, not a security sandbox.
 
-Not yet tested in a live Bob session: we have checked the hooks by giving them tool calls directly, but have not yet watched Bob run them. The "SI kit hooks active" line in step 1 of [Run it](#run-it) is how you check they are running in your Bob.
+Tested in live Bob sessions (Bob 2.0.6, 19 October 2026), in a fresh copy of this repository, with Bob's command line rather than the editor: the guard let Bob write inside `runs/` and refused a file at the root, an edit to `app/` and a shell command, and the disk confirmed nothing was written outside `runs/`; Bob used all four mock MCP servers through the guard; and the four commands produced a pack that passes every checker above, after correction rounds at each stage. The command line's output did not include the "SI kit hooks active" line, so we have not seen it ourselves; in the editor, step 1 of [Run it](#run-it) is how you check the hooks are running in your Bob.
 
 ## Migration targets
 
