@@ -1,0 +1,8 @@
+{
+  "kitVersion": "0.13.0-partner",
+  "asOf": "2026-10-19",
+  "basedOn": "0.12.1-v2",
+  "origin": "custom SI workflows on vanilla IBM Bob; not an IBM premium package",
+  "use": "interactive: a person runs /discover, /assess, /plan and /price in Bob and runs the checkers",
+  "change": "Prompts, rules and personas adapted for interactive partner use: run folders under runs/<name>/, checkers run by the user, a workspace hook guard that needs no environment variables, and the four synthetic MCP servers switched on. Every content and checker rule of 0.12.1-v2 is kept."
+}
