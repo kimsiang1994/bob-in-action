@@ -1,8 +1,8 @@
 {
-  "kitVersion": "0.13.0-partner",
-  "asOf": "2026-10-19",
-  "basedOn": "0.12.1-v2",
+  "kitVersion": "0.13.1-partner",
+  "asOf": "2026-10-20",
+  "basedOn": "0.13.0-partner",
   "origin": "custom SI workflows on vanilla IBM Bob; not an IBM premium package",
-  "use": "interactive: a person runs /discover, /assess, /plan and /price in Bob and runs the checkers",
-  "change": "Prompts, rules and personas adapted for interactive partner use: run folders under runs/<name>/, checkers run by the user, a workspace hook guard that needs no environment variables, and the four synthetic MCP servers switched on. Every content and checker rule of 0.12.1-v2 is kept."
+  "use": "interactive: a person runs /discover, /assess, /plan and /price in Bob and runs the checkers; headless Bob Shell use is documented in README.md (probed, not run end to end)",
+  "change": "Adds a root AGENTS.md (generated with Bob Shell 2.0.6's /init prompt, trimmed of assessment answers), documents the probe-verified headless pattern, and states that rules-<slug>/ must match the mode slug and that a command's wrong-mode stop is an instruction, not enforcement. No prompt, rule, mode, hook or checker logic changed."
 }

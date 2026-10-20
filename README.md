@@ -13,11 +13,35 @@ After each command you run a checker yourself. Bob has no shell in this kit, so 
 
 Everything here is synthetic: the application, the customers, the roster, the rate card, the tickets and the timesheets. Nothing Bob writes is a quote or an approval.
 
+## See it first
+
+**The demo page**, [yeokimsiang.github.io/bob-in-action](https://yeokimsiang.github.io/bob-in-action/), tells the story in a browser. It follows one line of the legacy code, `Desk.java` line 93, through the four stages to an illustrative price, then shows the seven migrations, how the kit is built and how to run it yourself. Nothing to install.
+
+**Three short videos** of the kit in IBM Bob. They have no sound: the narration plays as captions under the picture, and each video's page lists its chapters and the full narration.
+
+| | Video | What it shows |
+|---|---|---|
+| [<img src="site/videos/bob-in-action.jpg" width="240" alt="Bob in action">](https://yeokimsiang.github.io/bob-in-action/#watch-bob-in-action) | [Bob in action](https://yeokimsiang.github.io/bob-in-action/#watch-bob-in-action) | The four commands in the Bob IDE, from the legacy code to a line in the price. A recreated session, sped up. |
+| [<img src="site/videos/what-bob-reads.jpg" width="240" alt="What Bob reads">](https://yeokimsiang.github.io/bob-in-action/#watch-what-bob-reads) | [What Bob reads](https://yeokimsiang.github.io/bob-in-action/#watch-what-bob-reads) | The `.bob` folder: which file decides who Bob is, what he knows, what he can reach and what he may do. A recreated IDE with real Bob replies. |
+| [<img src="site/videos/bob-shell.jpg" width="240" alt="Bob Shell">](https://yeokimsiang.github.io/bob-in-action/#watch-bob-shell) | [Bob Shell](https://yeokimsiang.github.io/bob-in-action/#watch-bob-shell) | The same four stages from the terminal, one `bob` run per stage and a checker after each. Illustrative: not run end to end. |
+
+Bob in action and Bob Shell follow a separate run of the kit on the same code, and grey bars cover that run's own IDs and numbers. The figures that tell the story are the ones on the demo page, and they are illustrative, not a quote.
+
+**The four documents** Bob wrote in the demo's run, each readable on the page:
+
+| Document | What it holds |
+|---|---|
+| [Assessment report](https://yeokimsiang.github.io/bob-in-action/#report-assessment) | 23 findings, each tied to the code, and three ways forward |
+| [Effort model](https://yeokimsiang.github.io/bob-in-action/#report-effort) | Low, central and high hours for every deliverable |
+| [Implementation plan](https://yeokimsiang.github.io/bob-in-action/#report-plan) | Waves of work packages, with who does what |
+| [Statement of work](https://yeokimsiang.github.io/bob-in-action/#report-sow) | Scope and client decisions, priced in the SI's own tool |
+
 ## What is in the repository
 
 | Folder | What it holds |
 |---|---|
 | `app/` | The legacy application Bob assesses: a deliberately imperfect Java 8 invoice desk. Read-only. See `app/README.md`. |
+| `AGENTS.md` | Project context Bob loads in every mode: what the repo is, the stage order, where Bob may write. Generated with Bob's `/init` and trimmed so it gives no assessment answers away. |
 | `.bob/` | The Bob kit: the four commands, nine persona modes, rules, skills, hooks and MCP wiring. See `.bob/README.md`. |
 | `tools/` | Four read-only mock MCP servers, the complexity-metrics tool, the price checkers and the SI commercial engine. See `tools/README.md`. |
 | `targets/` | Worked examples of the invoice-preview feature migrated to seven targets, for reference. |
@@ -105,7 +129,29 @@ Each command uses Bob credits from your own account; the checkers cost nothing. 
 
 The controlled runs had fixed limits on how long each stage could go. The live run is this repository, run with Bob on 19 October 2026 and corrected until every checker passed. Correction rounds cost the most when they are open-ended. A short new task that names the exact rows or lines from the checker's errors cost us about 0.1 to 0.3 each; going on in a long chat cost about 0.5 to 1.3 per round. Treat the figures as a guide, not a promise.
 
+All of these figures were measured before the root `AGENTS.md` was added; every run now loads it as well.
+
+## Running headless with Bob Shell (probed, not run end to end)
+
+The kit is built and checked for the Bob IDE. If you drive it headless with Bob Shell (`bob run`, which needs an API key in `BOB_API_KEY` and approves every tool call itself), these points come from small real probes with Bob Shell 2.0.6; no full stage has been run this way yet, so try one stage first.
+
+- `bob run` does not expand the kit's slash commands, and a command file passed as an argument is rejected (its front matter starts with `---`). Pipe the command's text in instead, with the run name filled in.
+- Bob cannot ask you mid-run whether the previous checker passed, so say so after the command text.
+- The workspace hooks do run: the guard blocked a write outside `runs/<name>/`. Pass `--trust` so the folder is trusted.
+
+```
+$p = (Get-Content .bob/commands/discover.md -Raw) -replace '\$1','acme-1'
+$p | bob run --mode si-architect --trust --max-cost 1
+
+$p = (Get-Content .bob/commands/assess.md -Raw) -replace '\$1','acme-1'
+"$p`nThe /discover checks passed." | bob run --mode si-architect --max-cost 4
+```
+
+Then `plan.md` in `si-pm` and `price.md` in `si-commercial` the same way, running each stage's checkers in between exactly as above. `--max-cost` caps a run; a run that hits it stops and leaves partial files in place.
+
 ## What keeps Bob in its lane
+
+- **The rules' wording.** `.bob/rules/`, the mode's `rules-<slug>/AGENTS.md` and the root `AGENTS.md` are loaded into every run. In our probes Bob refused out-of-scope writes from the rules alone, before any guard was needed.
 
 - **Modes.** Each persona mode may edit only its own stage's files under `runs/<name>/`; the orchestrator, collator and tech-lead modes cannot edit at all.
 - **The guard hook.** Before every tool call, `.bob/hooks/pre_tool_guard.py` allows reads only inside this workspace, writes only inside `runs/<name>/` (no `..`, no links that lead elsewhere, never `app/`, `tools/`, `targets/` or `.bob/`), refuses every shell command and every delete, move or rename, and allows only the ten read-only tools of the four mock MCP servers.

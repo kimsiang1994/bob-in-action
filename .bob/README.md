@@ -13,7 +13,7 @@ The root `README.md` walks through a run. This file explains the pieces.
 | `/plan <name>` | `si-pm` | `reports/implementation-plan.md`, `reports/validation-ledger.md`, `data/plan-tasks.json` | `validate_dag.py`, report check (plan) |
 | `/price <name>` | `si-commercial` | `reports/sow.md`, `data/effort-rows.json` | `validate_effort.py`, `illustrative_price.py`, `check_effort_numbers.py`, full report check |
 
-A command cannot switch modes, so switch first (`/mode si-architect`, and so on); each command stops if it runs in the wrong mode. Each command has a wrapper skill of the same name in `skills/` with identical text, for Bob versions that load commands as skills. `<name>` must match `[A-Za-z0-9][A-Za-z0-9._-]*`.
+A command cannot switch modes, so switch first (`/mode si-architect`, and so on); each command's text tells Bob to stop if the mode is wrong. That is an instruction, not enforcement: what enforces writes is the mode's `fileRegex` and the guard hook. Each command has a wrapper skill of the same name in `skills/` with identical text, for Bob versions that load commands as skills. `<name>` must match `[A-Za-z0-9][A-Za-z0-9._-]*`.
 
 ## Modes
 
@@ -35,7 +35,7 @@ No mode has a shell (`command` group). Bob writes; you run the checkers and past
 
 ## Rules
 
-Bob loads `rules/` for every mode and `rules-<slug>/` for the active mode only.
+Bob loads `rules/` for every mode and `rules-<slug>/` for the active mode only; the folder name must match the mode's slug exactly, or Bob ignores it without warning. The root `AGENTS.md` is loaded in every mode too.
 
 - `rules/00-governance.md`: goal, workspace boundaries, hooks, conduct.
 - `rules/10-evidence.md`: evidence, IDs and provenance.
