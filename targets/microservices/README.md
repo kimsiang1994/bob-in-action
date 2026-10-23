@@ -1,6 +1,6 @@
 # Microservices (invoice preview service)
 
-Bob's bounded proof that invoice preview can be pulled out of the monolith into its own Spring Boot service on Java 21 (`src/main/java/demo/preview/PreviewApplication.java`, routes `GET /health` and `POST /invoice-preview`), with contract tests. The monolith keeps everything else. It is one feature, not a full migration.
+Bob's bounded proof that invoice preview can be pulled out of the monolith into its own Spring Boot service on Java 21 (`src/main/java/demo/preview/PreviewApplication.java`, routes `GET /internal/health` and `POST /api/invoice-preview`), with contract tests. The monolith keeps everything else. It is one feature, not a full migration.
 
 ## Build and test
 
